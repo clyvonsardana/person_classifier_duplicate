@@ -34,6 +34,7 @@ pip install flask tensorflow pillow numpy scipy
 deactivate
 
 Step 4: Run your project still in the terminal
+
 python app.py
 
 Step 5: In the web app, you need to add class first it must be match to your datasets:
