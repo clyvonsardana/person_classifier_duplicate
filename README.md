@@ -1,5 +1,5 @@
-# person_classifier_duplicate
-This is an HR chatbot application built using Flask, TensorFlow, and Keras
+# Person_classifier_duplicate
+This is an Person_classifier application built using Flask, TensorFlow
 
 # Prerequisites
 
@@ -18,25 +18,26 @@ To open the terminal CTRL + J
 
 Step 3: Do these commands:
 
-# virtual environment
+# Virtual environment
 
 python -m venv venv
 
-# activate
+# Activate
 
 venv\Scripts\activate
 
-# install packages
+# Install packages
 
 pip install flask tensorflow pillow numpy scipy
 
-# once you are done working or testing the web app. Just deactivate it
+# Once you are done working or testing the web app. Just deactivate it
 deactivate
 
 Step 4: Run your project still in the terminal
 python app.py
 
 Step 5: In the web app, you need to add class first it must be match to your datasets:
+
 ClydleYvonneSardana
 TomCruise
 AngelinaJolie
@@ -51,6 +52,7 @@ Step 7: Then, upload an image based on the dataset
 I provided a datasets here for a celebrity for you able to train the data. Datasets are data provided based on the classes (it could be images)
 
 Provided datasets are:
+
 ClydleYvonneSardana
 TomCruise
 AngelinaJolie
