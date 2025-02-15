@@ -1,0 +1,129 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Celebrity Image Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .step {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Celebrity Image Classifier</h1>
+
+    <!-- Step 1: Add Classes -->
+    <div class="step">
+        <h2>Step 1: Add Celebrity Names</h2>
+        <form action="/add_class" method="post">
+            <input type="text" name="class_name" placeholder="Enter celebrity name" required>
+            <button type="submit" class="button">Add Celebrity</button>
+        </form>
+        
+        {% if classes %}
+        <div class="result">
+            <h3>Added Celebrities:</h3>
+            <ul>
+            {% for class_name in classes %}
+                <li>{{ class_name }}: {{ photo_counts[class_name] }} photos</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Step 2: Upload Photos -->
+    <div class="step">
+        <h2>Step 2: Upload Photos</h2>
+        <form action="/upload_photo" method="post" enctype="multipart/form-data">
+            <select name="class_name" required>
+                <option value="">Select Celebrity</option>
+                {% for class_name in classes %}
+                <option value="{{ class_name }}">{{ class_name }}</option>
+                {% endfor %}
+            </select>
+            <input type="file" name="photos" accept="image/*" multiple required>
+            <button type="submit" class="button">Upload Photos</button>
+        </form>
+    </div>
+
+    <!-- Step 3: Training -->
+    <div class="step">
+        <h2>Step 3: Train Model</h2>
+        <button onclick="trainModel()" class="button" id="trainButton">
+            Start Training
+        </button>
+        <div id="trainingStatus" class="result" style="display: none;">
+            Training in progress...
+        </div>
+    </div>
+
+    <!-- Step 4: Classification -->
+    <div class="step">
+        <h2>Step 4: Test Classification</h2>
+        <form id="classifyForm" onsubmit="classifyImage(event)">
+            <input type="file" name="photo" accept="image/*" required>
+            <button type="submit" class="button" {% if not model_trained %}disabled{% endif %}>
+                Classify Image
+            </button>
+        </form>
+        <div id="classificationResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function trainModel() {
+            document.getElementById('trainingStatus').style.display = 'block';
+            document.getElementById('trainButton').disabled = true;
+
+            fetch('/train', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('trainingStatus').textContent = 'Training completed!';
+                    document.querySelector('#classifyForm button').disabled = false;
+                });
+        }
+
+        function classifyImage(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            fetch('/classify', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const result = document.getElementById('classificationResult');
+                result.style.display = 'block';
+                result.textContent = `Prediction: ${data.class} (Confidence: ${data.confidence.toFixed(2)}%)`;
+            });
+        }
+    </script>
+</body>
+</html>
